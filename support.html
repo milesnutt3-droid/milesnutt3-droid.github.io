@@ -42,12 +42,13 @@ color:rgba(255,255,255,.44);display:flex;flex-wrap:wrap;gap:18px}
 .back{display:inline-block;margin:0 0 26px;font-size:15px}
 
 /* Email with a hover-reveal copy button */
-.mail{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.mail{display:inline-flex;align-items:center;gap:0;white-space:nowrap}
 .copy{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
 padding:0;margin-left:4px;border:1px solid var(--line);border-radius:7px;background:transparent;
 color:var(--muted);cursor:pointer;opacity:0;transition:opacity .13s ease,color .13s ease,
 background .13s ease,border-color .13s ease}
 .copy svg{width:14px;height:14px}
+.mail .tail{color:var(--muted)}
 .copy .tick{display:none}
 .mail:hover .copy,.mail:focus-within .copy,.copy:focus-visible{opacity:1}
 .copy:hover{color:var(--fg);background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.2)}
@@ -116,8 +117,8 @@ transition:color .12s ease,background .12s ease}
    sorted wrongly, which is why the rotation is also clamped to 18deg.
    Every dimension derives from --pw using the real device: 71.9 x 150.0 x 8.75mm.
 --------------------------------------------------------------------------- */
-:root{--pw:clamp(196px,58vw,286px)}
-.phone-block{display:grid;gap:24px;justify-items:center;align-items:center;margin:34px 0 44px}
+:root{--pw:clamp(196px,64vw,286px)}
+.phone-block{display:grid;gap:22px;justify-items:start;align-items:center;margin:34px 0 44px}
 /* Beside the device from 720px up, stacked below it on a phone. */
 @media (min-width:720px){
   .phone-block{grid-template-columns:auto minmax(250px,1fr);gap:40px;justify-items:start;
@@ -135,7 +136,8 @@ transition:color .12s ease,background .12s ease}
 letter-spacing:.13em;text-transform:uppercase}
 .phone-copy h3{margin:0 0 10px;color:var(--fg);font-size:27px;letter-spacing:-.02em;
 line-height:1.1}
-.phone-copy p:not(.step){margin:0;font-size:15.5px;line-height:1.62;max-width:36ch}
+.phone-copy p:not(.step){margin:0;font-size:15.5px;line-height:1.62}
+@media (min-width:720px){.phone-copy p:not(.step){max-width:36ch}}
 /* The three lines fade up in sequence rather than all at once, which reads as
    the caption arriving with the screenshot instead of blinking into place. */
 .phone-copy>article>*{opacity:0;transform:translateY(9px);
@@ -219,13 +221,14 @@ background:radial-gradient(closest-side,rgba(0,0,0,.72),transparent 72%);filter:
 transform:translateX(calc(-50% + var(--shadow-x,0px)));pointer-events:none;z-index:-1}
 .phone-tabs{display:flex;align-items:center;gap:4px;padding:4px;border-radius:12px;
 background:var(--card);border:1px solid var(--line)}
-.phone-tab{appearance:none;border:0;background:none;cursor:pointer;padding:7px 12px;
-border-radius:8px;font:inherit;font-size:13px;font-weight:600;letter-spacing:.01em;
-color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s ease}
+.phone-tab{appearance:none;border:0;background:none;cursor:pointer;flex:1 1 0;
+padding:9px 6px;border-radius:8px;font:inherit;font-size:13px;font-weight:600;
+letter-spacing:.01em;text-align:center;color:var(--muted);white-space:nowrap;
+transition:color .18s ease,background .18s ease}
 .phone-tab:hover{color:var(--fg)}
 .phone-tab[aria-selected="true"]{color:#0a0a0d;background:var(--fg)}
 .phone-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (max-width:420px){.phone-tab{padding:7px 9px;font-size:12px}}
+@media (max-width:400px){.phone-tab{font-size:12px;padding:9px 4px}}
 @media (prefers-reduced-motion:reduce){
   .phone-shots img{transition:none}
   .phone-copy>article>*{transform:none;transition:opacity .01s linear;transition-delay:0s}
@@ -241,7 +244,7 @@ color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s
 <main>
 
 <h1>Support</h1>
-<p><span class="mail"><a href="mailto:nabbedgame@gmail.com">Email support</a><button type="button" class="copy" data-mail="nabbedgame@gmail.com" aria-label="Copy email address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect class="clip" x="9" y="9" width="11" height="11" rx="2"/><path class="clip" d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><path class="tick" d="M20 6 9 17l-5-5"/></svg></button></span> &mdash; it reaches a person, usually within a day.</p>
+<p>Something not working, or an idea? <span class="mail"><a href="mailto:nabbedgame@gmail.com">Email support</a><span class="tail">.</span><button type="button" class="copy" data-mail="nabbedgame@gmail.com" aria-label="Copy email address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect class="clip" x="9" y="9" width="11" height="11" rx="2"/><path class="clip" d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><path class="tick" d="M20 6 9 17l-5-5"/></svg></button></span></p>
 
 <h2>Reporting something a player wrote</h2>
 <p>Press and hold the answer, then choose <strong>Report this answer</strong>. It is hidden on your
