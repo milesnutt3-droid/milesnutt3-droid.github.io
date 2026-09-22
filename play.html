@@ -107,6 +107,100 @@ transition:color .12s ease,background .12s ease}
     @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   }
 }
+
+/* ---- iPhone 17 Pro mockup -------------------------------------------------
+   Ported from the Gradely site's phone.css. The body is a rounded rail plus a
+   glass front and a back at three clearly separated depths: browsers sort whole
+   elements rather than depth-resolving per pixel, so a stack of slices gets
+   mis-sorted at angle and a slice covers the screen. Three elements cannot be
+   sorted wrongly, which is why the rotation is also clamped to 18deg.
+   Every dimension derives from --pw using the real device: 71.9 x 150.0 x 8.75mm.
+--------------------------------------------------------------------------- */
+:root{--pw:clamp(196px,58vw,286px)}
+.phone-block{display:flex;flex-direction:column;align-items:center;gap:18px;margin:34px 0 40px}
+.phone-shell{position:relative;
+--ph:calc(var(--pw) * 2.0862);--pd:calc(var(--pw) * .1217);--pr:calc(var(--pw) * .17385);
+--bezel:calc(var(--pw) * .036951);--sr:calc(var(--pr) - var(--bezel));
+--rail-w:calc(var(--pw) * .032);--bt:calc(var(--pw) * .008);
+--rot-y:-11deg;--rot-x:-.14deg;width:var(--pw)}
+.phone-stage{position:relative;width:var(--pw);height:var(--ph);perspective:1500px;
+perspective-origin:50% 44%;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+-webkit-tap-highlight-color:transparent;cursor:grab}
+.phone-stage:active{cursor:grabbing}
+.phone{position:absolute;inset:0;transform-style:preserve-3d;
+transform:rotateX(var(--rot-x)) rotateY(var(--rot-y))}
+.phone-rail{position:absolute;inset:0;border-radius:var(--pr);padding:var(--rail-w);
+background:linear-gradient(100deg,#23272d 0%,#767d87 7%,#aeb6c0 15%,#5f666f 29%,#363b43 47%,
+#454b54 62%,#99a1ab 82%,#5c636c 93%,#212429 100%);
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+-webkit-mask-composite:xor;mask-composite:exclude}
+.phone-face{position:absolute;inset:0;border-radius:var(--pr);background:#05060a;overflow:hidden;
+transform:translateZ(calc(var(--pd) / 2 + .2px));
+box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 0 0 2.5px rgba(0,0,0,.9)}
+.phone-screen{position:absolute;inset:var(--bezel);border-radius:var(--sr);overflow:hidden;
+background:#0a0a0d;box-shadow:inset 0 0 0 1px rgba(0,0,0,.85)}
+.phone-shots{position:relative;width:100%;aspect-ratio:1012 / 2201}
+.phone-shots img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;
+opacity:0;transition:opacity .34s ease;pointer-events:none;-webkit-user-drag:none}
+.phone-shots img.is-current{opacity:1}
+/* fixed sheen plus a specular streak that slides as the body turns — moved by
+   transform, because re-angling a gradient repaints the whole glass each frame */
+.phone-gloss{position:absolute;inset:0;border-radius:var(--pr);overflow:hidden;
+pointer-events:none;
+background:radial-gradient(90% 46% at 24% -6%,rgba(255,255,255,.05),transparent 62%)}
+.phone-gloss::before{content:"";position:absolute;top:-30%;bottom:-30%;left:50%;width:56%;
+margin-left:-28%;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,
+rgba(255,255,255,.028) 38%,rgba(255,255,255,.062) 50%,rgba(255,255,255,.022) 62%,
+rgba(255,255,255,0) 100%);transform:translateX(var(--gloss-x,0px)) rotate(16deg)}
+.phone-back{position:absolute;inset:0;border-radius:var(--pr);
+background:radial-gradient(90% 60% at 30% 12%,rgba(255,255,255,.07),transparent 60%),
+linear-gradient(150deg,#23262b,#131519 55%,#1c1f24);
+box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+transform:rotateY(180deg) translateZ(calc(var(--pd) / 2 + .2px));backface-visibility:hidden}
+.phone-cam{position:absolute;top:3.4%;left:5%;width:46%;height:16%;
+border-radius:calc(var(--pw) * .09);background:linear-gradient(150deg,#303339,#191c21);
+box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 2px 6px rgba(0,0,0,.5)}
+.phone-lens{position:absolute;width:30%;padding-bottom:30%;border-radius:50%;
+background:radial-gradient(circle at 36% 32%,#4a4f57 0%,#14161a 46%,#05060a 78%);
+box-shadow:inset 0 0 0 2px rgba(255,255,255,.1),0 1px 3px rgba(0,0,0,.7)}
+.phone-lens:nth-child(1){top:9%;left:8%}
+.phone-lens:nth-child(2){top:9%;left:55%}
+.phone-lens:nth-child(3){top:55%;left:31%}
+/* A button is a closed prism: the face along the rail plus two end caps. The
+   caps are adjacent to the face in projection at every angle, so a steep turn
+   never opens a hole, and three rects cannot scallop the way slices did. */
+.phone-btn{position:absolute;width:var(--bt);transform-style:preserve-3d;pointer-events:none}
+.phone-btn.is-left{left:calc(var(--bt) * -1)}
+.phone-btn.is-right{right:calc(var(--bt) * -1)}
+.phone-btn i{position:absolute;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.phone-btn .btn-out{top:0;bottom:0;left:0;width:calc(var(--pd) * .56);
+border-radius:calc(var(--bt) * .35);box-shadow:inset 0 0 0 .5px rgba(0,0,0,.45);
+transform-origin:0 50%;background:linear-gradient(90deg,#1a1d22 0%,#454b53 14%,#7b828c 34%,
+#9aa1ab 48%,#5d646d 66%,#383d45 84%,#1e2126 100%)}
+.phone-btn.is-left .btn-out{transform:rotateY(-90deg) translateX(calc(var(--pd) * -.28))}
+.phone-btn.is-right .btn-out{left:auto;right:0;transform-origin:100% 50%;
+transform:rotateY(90deg) translateX(calc(var(--pd) * -.28))}
+.phone-btn .btn-cap{inset:0;background:linear-gradient(180deg,#2c3037,#202429)}
+.phone-btn .btn-cap.is-front{transform:translateZ(calc(var(--pd) * .28))}
+.phone-btn .btn-cap.is-back{transform:translateZ(calc(var(--pd) * -.28))}
+.phone-btn.action{top:14.6%;height:4.1%}
+.phone-btn.vol-up{top:21.2%;height:6.4%}
+.phone-btn.vol-dn{top:29.4%;height:6.4%}
+.phone-btn.power{top:22.2%;height:9.6%}
+.phone-btn.camera{top:36.2%;height:5.4%}
+.phone-shadow{position:absolute;left:50%;bottom:-6%;width:86%;height:7%;border-radius:50%;
+background:radial-gradient(closest-side,rgba(0,0,0,.72),transparent 72%);filter:blur(9px);
+transform:translateX(calc(-50% + var(--shadow-x,0px)));pointer-events:none;z-index:-1}
+.phone-tabs{display:flex;align-items:center;gap:4px;padding:4px;border-radius:12px;
+background:var(--card);border:1px solid var(--line)}
+.phone-tab{appearance:none;border:0;background:none;cursor:pointer;padding:7px 12px;
+border-radius:8px;font:inherit;font-size:13px;font-weight:600;letter-spacing:.01em;
+color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s ease}
+.phone-tab:hover{color:var(--fg)}
+.phone-tab[aria-selected="true"]{color:#0a0a0d;background:var(--fg)}
+.phone-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:420px){.phone-tab{padding:7px 9px;font-size:12px}}
+@media (prefers-reduced-motion:reduce){.phone-shots img{transition:none}}
 </style>
 </head>
 <body>
@@ -200,6 +294,85 @@ document.addEventListener('click', function (e) {
     navigator.clipboard.writeText(value).then(done, fallback);
   } else { fallback(); }
 });
+
+/* iPhone mockup motion. One rAF loop owns every animated value and writes a
+   single transform on one element, so the browser recomposites rather than
+   restyling the 3D subtree. Idle it sways; a drag steers it; it stops when
+   off screen or when the reader asks for reduced motion. */
+(function () {
+  var root = document.querySelector('[data-phone]');
+  if (!root) return;
+  var stage = root.querySelector('.phone-stage');
+  var phone = root.querySelector('.phone');
+  var gloss = root.querySelector('.phone-gloss');
+  var tabs = [].slice.call(root.querySelectorAll('.phone-tab'));
+  var shots = [].slice.call(root.querySelectorAll('.phone-shots img'));
+  if (!stage || !phone) return;
+
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SWAY = 15, SWAY_MS = 7200, TILT = 4, MAX_Y = 18, MAX_X = 14, EASE = 0.1;
+  var TAU = Math.PI * 2, PHASE = -0.8232;   // frame 0 == the CSS pose, so no jump
+  function swayY(ms) { return Math.sin(ms / SWAY_MS * TAU + PHASE) * SWAY; }
+  function swayX(ms) { return Math.cos(ms / SWAY_MS * TAU + PHASE) * TILT * 0.5 - 1.5; }
+
+  var rotY = swayY(0), rotX = swayX(0), targetY = rotY, targetX = rotX;
+  var elapsed = 0, last = null, raf = null, onScreen = true;
+  var dragging = false, hover = false, dragId = null;
+  var sx = 0, sy = 0, baseY = 0, baseX = 0;
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  function frame(now) {
+    if (last === null) last = now;
+    elapsed += Math.min(now - last, 50);   // a backgrounded tab resumes, not jumps
+    last = now;
+    if (!dragging && !hover) { targetY = swayY(elapsed); targetX = swayX(elapsed); }
+    rotY += (targetY - rotY) * EASE;
+    rotX += (targetX - rotX) * EASE;
+    phone.style.transform =
+      'rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg)';
+    if (gloss) gloss.style.setProperty('--gloss-x', (rotY * 2.2).toFixed(1) + 'px');
+    stage.style.setProperty('--shadow-x', (-rotY * 0.55).toFixed(2) + 'px');
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (raf === null && !reduced && onScreen) raf = requestAnimationFrame(frame); }
+  function stop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; last = null; } }
+
+  stage.addEventListener('pointerdown', function (e) {
+    dragging = true; dragId = e.pointerId;
+    sx = e.clientX; sy = e.clientY; baseY = rotY; baseX = rotX;
+    stage.setPointerCapture(dragId); start();
+  });
+  stage.addEventListener('pointermove', function (e) {
+    if (!dragging || e.pointerId !== dragId) return;
+    targetY = clamp(baseY + (e.clientX - sx) * 0.4, -MAX_Y, MAX_Y);
+    targetX = clamp(baseX - (e.clientY - sy) * 0.2, -MAX_X, MAX_X);
+  });
+  function release(e) {
+    if (!dragging || (e && e.pointerId !== dragId)) return;
+    dragging = false; dragId = null;
+    elapsed = 0; last = null;            // resume the sway from where it rests
+  }
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
+  stage.addEventListener('pointerenter', function () { hover = true; });
+  stage.addEventListener('pointerleave', function () { hover = false; });
+
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+      tab.setAttribute('aria-selected', 'true');
+      shots.forEach(function (img, j) { img.classList.toggle('is-current', i === j); });
+    });
+  });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      onScreen = entries[0].isIntersecting;
+      onScreen ? start() : stop();       // no frames burned while it is off screen
+    }, { threshold: 0.05 }).observe(stage);
+  }
+  start();
+}());
 </script>
 </body>
 </html>
