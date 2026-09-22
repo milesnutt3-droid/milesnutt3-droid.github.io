@@ -117,7 +117,33 @@ transition:color .12s ease,background .12s ease}
    Every dimension derives from --pw using the real device: 71.9 x 150.0 x 8.75mm.
 --------------------------------------------------------------------------- */
 :root{--pw:clamp(196px,58vw,286px)}
-.phone-block{display:flex;flex-direction:column;align-items:center;gap:18px;margin:34px 0 40px}
+.phone-block{display:grid;gap:24px;justify-items:center;align-items:center;margin:34px 0 44px}
+/* Beside the device from 720px up, stacked below it on a phone. */
+@media (min-width:720px){
+  .phone-block{grid-template-columns:auto minmax(250px,1fr);gap:40px;justify-items:start;
+  grid-template-areas:"device side"}
+  .phone-shell{grid-area:device}
+  .phone-side{grid-area:side}
+}
+.phone-side{display:flex;flex-direction:column;gap:22px;width:100%;max-width:400px}
+/* Every caption occupies the same grid cell, so the block is as tall as the
+   longest one and nothing reflows when the tab changes. */
+.phone-copy{display:grid}
+.phone-copy>article{grid-area:1 / 1;visibility:hidden}
+.phone-copy>article.is-current{visibility:visible}
+.phone-copy .step{margin:0 0 8px;color:var(--accent);font-size:12px;font-weight:700;
+letter-spacing:.13em;text-transform:uppercase}
+.phone-copy h3{margin:0 0 10px;color:var(--fg);font-size:27px;letter-spacing:-.02em;
+line-height:1.1}
+.phone-copy p:not(.step){margin:0;font-size:15.5px;line-height:1.62;max-width:36ch}
+/* The three lines fade up in sequence rather than all at once, which reads as
+   the caption arriving with the screenshot instead of blinking into place. */
+.phone-copy>article>*{opacity:0;transform:translateY(9px);
+transition:opacity .36s ease,transform .36s cubic-bezier(.22,1,.36,1)}
+.phone-copy>article.is-current>*{opacity:1;transform:none}
+.phone-copy>article.is-current>*:nth-child(1){transition-delay:.04s}
+.phone-copy>article.is-current>*:nth-child(2){transition-delay:.10s}
+.phone-copy>article.is-current>*:nth-child(3){transition-delay:.16s}
 .phone-shell{position:relative;
 --ph:calc(var(--pw) * 2.0862);--pd:calc(var(--pw) * .1217);--pr:calc(var(--pw) * .17385);
 --bezel:calc(var(--pw) * .036951);--sr:calc(var(--pr) - var(--bezel));
@@ -200,7 +226,10 @@ color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s
 .phone-tab[aria-selected="true"]{color:#0a0a0d;background:var(--fg)}
 .phone-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (max-width:420px){.phone-tab{padding:7px 9px;font-size:12px}}
-@media (prefers-reduced-motion:reduce){.phone-shots img{transition:none}}
+@media (prefers-reduced-motion:reduce){
+  .phone-shots img{transition:none}
+  .phone-copy>article>*{transform:none;transition:opacity .01s linear;transition-delay:0s}
+}
 </style>
 </head>
 <body>
@@ -227,7 +256,10 @@ color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s
     <div class="phone-face"><div class="phone-screen"><div class="phone-shots"><img class="is-current" src="shots/answer.webp" width="1012" height="2201" alt="Nabbed: Answering the question in secret" fetchpriority="high"><img src="shots/switch.webp" width="1012" height="2201" alt="Nabbed: Choosing whether to take somebody else's answer" loading="lazy"><img src="shots/vote.webp" width="1012" height="2201" alt="Nabbed: The room voting on the answers" loading="lazy"><img src="shots/crown.webp" width="1012" height="2201" alt="Nabbed: The round result, with the crown awarded" loading="lazy"></div></div>
       <div class="phone-gloss" aria-hidden="true"></div></div>
   </div><div class="phone-shadow" aria-hidden="true"></div></div></div>
-  <div class="phone-tabs" role="tablist" aria-label="App screens"><button type="button" class="phone-tab" role="tab" aria-selected="true">Answer</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Switch</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Vote</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Crown</button></div>
+  <div class="phone-side">
+    <div class="phone-tabs" role="tablist" aria-label="App screens"><button type="button" class="phone-tab" role="tab" aria-selected="true">Answer</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Switch</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Vote</button><button type="button" class="phone-tab" role="tab" aria-selected="false">Crown</button></div>
+    <div class="phone-copy"><article class="is-current"><p class="step">Step 1 of 4</p><h3>Answer</h3><p>Everyone gets the same question and writes their answer in secret. Nobody can see what anyone else has written yet.</p></article><article><p class="step">Step 2 of 4</p><h3>Switch</h3><p>The answers come back with no names on them. You can take one for yourself or keep your own, and if two people reach for the same one, neither of them gets it.</p></article><article><p class="step">Step 3 of 4</p><h3>Vote</h3><p>Now the board shows every answer, who wrote it, and who ended up holding it. The room talks it over and votes for the one that deserves to win.</p></article><article><p class="step">Step 4 of 4</p><h3>Crown</h3><p>Whoever is holding the winning answer takes the crown, even when somebody else wrote it. That is usually the point where the arguing starts.</p></article></div>
+  </div>
 </div>
 
 <h2>How a round works</h2>
@@ -235,11 +267,12 @@ color:var(--muted);white-space:nowrap;transition:color .18s ease,background .18s
   <li><strong>Answer.</strong> Everyone answers the same question in secret.</li>
   <li><strong>Switch.</strong> One player takes somebody else's answer, or keeps their own
       &mdash; without knowing whose is whose.</li>
-  <li><strong>Vote.</strong> Every answer appears with no names. The room votes.</li>
+  <li><strong>Vote.</strong> The board shows every answer, who wrote it and who is
+      holding it. The room votes.</li>
 </ol>
 <div class="card">
-  <p style="margin:0">Whoever ends up holding the winner takes the crown. You find out who wrote
-  what at the very end. <a href="play.html">Full rules &rarr;</a></p>
+  <p style="margin:0">Whoever ends up holding the winner takes the crown &mdash; even when
+  somebody else wrote it. <a href="play.html">Full rules &rarr;</a></p>
 </div>
 
 <h2>Playing together</h2>
@@ -298,6 +331,7 @@ document.addEventListener('click', function (e) {
   var gloss = root.querySelector('.phone-gloss');
   var tabs = [].slice.call(root.querySelectorAll('.phone-tab'));
   var shots = [].slice.call(root.querySelectorAll('.phone-shots img'));
+  var copy = [].slice.call(root.querySelectorAll('.phone-copy > article'));
   if (!stage || !phone) return;
 
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -353,6 +387,7 @@ document.addEventListener('click', function (e) {
       tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
       tab.setAttribute('aria-selected', 'true');
       shots.forEach(function (img, j) { img.classList.toggle('is-current', i === j); });
+      copy.forEach(function (art, j) { art.classList.toggle('is-current', i === j); });
     });
   });
 
