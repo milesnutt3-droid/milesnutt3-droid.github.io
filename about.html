@@ -41,6 +41,21 @@ footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font-si
 color:rgba(255,255,255,.44);display:flex;flex-wrap:wrap;gap:18px}
 .back{display:inline-block;margin:0 0 26px;font-size:15px}
 
+/* Email with a hover-reveal copy button */
+.mail{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.copy{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+padding:0;margin-left:4px;border:1px solid var(--line);border-radius:7px;background:transparent;
+color:var(--muted);cursor:pointer;opacity:0;transition:opacity .13s ease,color .13s ease,
+background .13s ease,border-color .13s ease}
+.copy svg{width:14px;height:14px}
+.copy .tick{display:none}
+.mail:hover .copy,.mail:focus-within .copy,.copy:focus-visible{opacity:1}
+.copy:hover{color:var(--fg);background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.2)}
+.copy.ok{opacity:1;color:var(--accent);border-color:var(--accent)}
+.copy.ok .clip{display:none}
+.copy.ok .tick{display:block}
+@media (hover:none){.copy{opacity:1}}
+
 /* Download button — soft-edged rectangle, Apple mark + label */
 .dl{display:inline-flex;align-items:center;gap:10px;background:var(--fg);color:#0a0a0d;
 font-weight:600;font-size:16px;line-height:1;letter-spacing:-.01em;padding:14px 22px;
@@ -130,7 +145,7 @@ for what.</p>
 on what already works.</p>
 
 <h2>Get in touch</h2>
-<p><a href="mailto:nabbedgame@gmail.com">nabbedgame@gmail.com</a>. It reaches a person.</p>
+<p><span class="mail"><a href="mailto:nabbedgame@gmail.com">Email us</a><button type="button" class="copy" data-mail="nabbedgame@gmail.com" aria-label="Copy email address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect class="clip" x="9" y="9" width="11" height="11" rx="2"/><path class="clip" d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><path class="tick" d="M20 6 9 17l-5-5"/></svg></button></span>. It reaches a person.</p>
 
 <footer>
   <a href="play.html">How to play</a>
@@ -138,9 +153,35 @@ on what already works.</p>
   <a href="about.html">About</a>
   <a href="privacy.html">Privacy</a>
   <a href="terms.html">Terms</a>
-  <a href="mailto:nabbedgame@gmail.com">Contact</a>
+  <span class="mail"><a href="mailto:nabbedgame@gmail.com">Contact</a><button type="button" class="copy" data-mail="nabbedgame@gmail.com" aria-label="Copy email address"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect class="clip" x="9" y="9" width="11" height="11" rx="2"/><path class="clip" d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><path class="tick" d="M20 6 9 17l-5-5"/></svg></button></span>
   <span>&copy; 2026 Nabbed</span>
 </footer>
 </main>
+<script>
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('.copy');
+  if (!b) return;
+  var value = b.getAttribute('data-mail');
+  function done() {
+    b.classList.add('ok');
+    b.setAttribute('aria-label', 'Email address copied');
+    setTimeout(function () {
+      b.classList.remove('ok');
+      b.setAttribute('aria-label', 'Copy email address');
+    }, 1600);
+  }
+  function fallback() {
+    var t = document.createElement('textarea');
+    t.value = value; t.setAttribute('readonly', '');
+    t.style.cssText = 'position:fixed;top:0;opacity:0';
+    document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); done(); } catch (err) {}
+    t.remove();
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(value).then(done, fallback);
+  } else { fallback(); }
+});
+</script>
 </body>
 </html>
